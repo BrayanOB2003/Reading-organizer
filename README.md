@@ -5,4 +5,4 @@ said readings can be classified by categories and will be organized from least t
 The program is developed in the Java programming language through the eclipse IDE, it is being developed as a desktop application compatible with any 
 operating system that supports JRE.
 
-Documentation link:
+Documentation link: https://github.com/BrayanOB2003/Reading-organizer/blob/07631eead052777b5b71dbb8259e2c9b3339b8fe/Docs/Reading%20organizer.pdf
