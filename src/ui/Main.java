@@ -1,8 +1,5 @@
 package ui;
 
-import java.net.URL;
-import java.nio.file.Paths;
-
 import gui.mainScreenGUI;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

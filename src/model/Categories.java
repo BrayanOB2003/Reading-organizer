@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Categories {
 	
 	private Category categories;
@@ -134,5 +136,19 @@ public class Categories {
 
 	public void setCategories(Category categories) {
 		this.categories = categories;
+	}
+	
+	public ArrayList<Category> getList(){
+		ArrayList<Category> c = new ArrayList<Category>();
+		return getList(categories, c);
+	}
+	
+	private ArrayList<Category> getList(Category current, ArrayList<Category> c) {
+		if(current != null) {
+			c.add(current);
+			return getList(current.getNext(), c);
+		} else {
+			return c;
+		}
 	}
 }

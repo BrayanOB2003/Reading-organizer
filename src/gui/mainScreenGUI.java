@@ -1,40 +1,45 @@
 package gui;
 
-import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 
-import com.sun.scenario.effect.DropShadow;
-import com.sun.scenario.effect.Effect;
-import com.sun.xml.internal.txw2.TXW;
+import javax.swing.DefaultDesktopManager;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.Category;
 import model.Organizer;
 
 public class mainScreenGUI {
@@ -77,6 +82,21 @@ public class mainScreenGUI {
 
     @FXML
     private Button managerDeleteButton;
+    
+    @FXML
+    private GridPane readingGrid;
+    
+    @FXML
+    private TextField txtFilePath;
+
+    @FXML
+    private TextField txtFileName;
+
+    @FXML
+    private DatePicker dateSelect;
+
+    @FXML
+    private ComboBox<Category> comboCategories;
     
     private ArrayList<Button> categories;
     
@@ -151,22 +171,6 @@ public class mainScreenGUI {
     			cancelledButton.setStyle("-fx-background-color: transparent");
     		}
     	});
-    }
-    
-    @FXML
-    public void addReading(ActionEvent event) throws IOException {
-    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/interfaces/AddFilesScreen.fxml"));
-		fxmlLoader.setController(this);
-		
-		Parent root = fxmlLoader.load();
-		
-		
-		Scene scene = new Scene(root);
-		Stage stage = new Stage();
-		stage.initModality(Modality.APPLICATION_MODAL);
-		stage.setScene(scene);
-		//stage.initStyle(StageStyle.UNDECORATED);
-		stage.showAndWait();
     }
     
     @FXML
@@ -260,5 +264,75 @@ public class mainScreenGUI {
     @FXML
     public void removeCategory(ActionEvent event) {
     	
+    }
+    
+    @FXML
+    public void addReading(ActionEvent event) throws IOException {
+    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/interfaces/AddFilesScreen.fxml"));
+		fxmlLoader.setController(this);
+		
+		Parent root = fxmlLoader.load();
+		
+		
+		Scene scene = new Scene(root);
+		Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.setScene(scene);
+		stage.initStyle(StageStyle.UNDECORATED);
+		
+		putCateogories();
+		
+		stage.showAndWait();
+    }
+    
+    private void putCateogories() {
+    	ObservableList<Category> categories = FXCollections.observableArrayList(organizer.getCategoriesList());
+		comboCategories.setItems(categories);
+    }
+    
+    @FXML
+    public void addFile(ActionEvent event) {
+    	
+			try {
+				
+				Stage stage = new Stage();
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Select reading");
+				File d = fileChooser.showOpenDialog(stage);
+				txtFilePath.setText(d.getPath());
+				
+			} catch (Exception e) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setHeaderText(null);
+				alert.setContentText("Documento no encontrado.");
+				alert.showAndWait();
+			}
+    }
+    
+    @FXML
+    public void addCorrectReading(ActionEvent event) throws IOException {
+    	
+    	if (!txtFileName.getText().isEmpty() && !txtFilePath.getText().isEmpty() && comboCategories.getValue() != null) {
+    		
+    			Path p = Paths.get(txtFilePath.getText());
+				byte[] b = Files.readAllBytes(p);
+				
+				LocalDate d = dateSelect.getValue();
+				System.out.println(d.getDayOfMonth());
+				System.out.println(d.getMonthValue());
+				organizer.addReading(b, comboCategories.getValue(), txtFileName.getText(), d);
+				
+    	} else {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setHeaderText(null);
+			alert.setContentText("Hay campos vacíos.");
+			alert.showAndWait();
+		}
+    }
+    
+    @FXML
+    public void closeAddFileScreen(ActionEvent event) {
+    	Stage stage = (Stage)dateSelect.getScene().getWindow();
+    	stage.close();
     }
 }
