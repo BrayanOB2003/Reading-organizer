@@ -4,26 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class CategoryTest {
+class ReadingTest {
 
-	@Test
-	public void addCategory() {
-		
-	}
-	
-	@Test
-	public void testCategory() {
-		addCategory();
-		
-		String n = "Algebra";
-		
-		Category c = new Category(n);
-		
-		assertEquals(n, c.getName());
-	}
-	
-	@Test
-	public void modifyCategory() {
+
+	private void modifyCategory() {
 		
 	}
 	
